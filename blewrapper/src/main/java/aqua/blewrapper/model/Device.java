@@ -25,7 +25,7 @@ public class Device {
     }
 
     public String getDeviceAddress() {
-        return PreferenceClass.getInstance(context).getString(deviceName, "");
+        return PreferenceClass.getInstance(context).getString(deviceAddress, "");
     }
 
     public void setDeviceAddress(String deviceAddress) {

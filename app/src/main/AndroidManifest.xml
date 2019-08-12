@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".FragmentLayout"
+            android:name=".BLEActivity"
             android:label="@string/title_activity_main"
             android:launchMode="singleTask"
             android:configChanges="keyboardHidden|orientation|screenSize"

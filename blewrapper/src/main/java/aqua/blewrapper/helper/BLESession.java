@@ -120,7 +120,9 @@ public class BLESession extends LiveData {
             } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBLEService.getSupportedGattServices());
-                if (mGattCharacteristics != null) {
+
+                //if (mGattCharacteristics != null) {
+                if (false) {
                     BluetoothGattCharacteristic characteristic = null;
                     for (Map.Entry<UUID, ArrayList<BluetoothGattCharacteristic>> entry : servicemap.entrySet()) {
                         UUID key = entry.getKey();

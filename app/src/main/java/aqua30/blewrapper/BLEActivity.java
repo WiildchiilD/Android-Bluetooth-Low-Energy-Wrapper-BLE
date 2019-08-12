@@ -53,7 +53,7 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
     public static final String mode = "mode";
     /* variables */
     private StringBuilder dataBuilder;
-//    private String connectedDeviceName, connectedDeviceAddress;
+    //    private String connectedDeviceName, connectedDeviceAddress;
     private String selectedMode;
 
     @Override
@@ -65,7 +65,7 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
         button_bleMode = findViewById(R.id.bleMode);
         button_manualMode = findViewById(R.id.manualMode);
         /*  getting any presaved or pre connected device name and address
-        *   This details are automatically saved by the wrapper */
+         *   This details are automatically saved by the wrapper */
         selectedMode = PreferenceClass.getInstance(this).getString(mode, Manual);
         /* only for demo */
         setMode();
@@ -75,7 +75,7 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
         bluetoothManager = new BluetoothController(this);
         bluetoothManager.setGoogleApiClient(mGoogleApiClient);
         /* set this if you want to receive the callbacks related to bluetooth permission, gps state for
-        *  device > M, bluetooth on device is connected or not*/
+         *  device > M, bluetooth on device is connected or not*/
         bluetoothManager.setConnectionCallbacks(this);
         /* set this callback if you want to received the data from BLE device */
         bluetoothManager.setDataCallbacks(this);
@@ -129,8 +129,8 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
         selectedMode = Manual;
         PreferenceClass.getEditor(this).putString(mode, selectedMode).apply();
         setMode();
-        if (!bluetoothManager.getSavedDevice().getDeviceAddress().isEmpty()){
-            setDataOnScreen("Manual mode activated. Disconnected "+
+        if (!bluetoothManager.getSavedDevice().getDeviceAddress().isEmpty()) {
+            setDataOnScreen("Manual mode activated. Disconnected " +
                     bluetoothManager.getSavedDevice().getDeviceAddress());
         }
         bluetoothManager.disconnect();
@@ -150,7 +150,7 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
 
     @SuppressLint("LongLogTag")
     protected synchronized void buildGoogleApiClient() {
-        log( "Building GoogleApiClient");
+        log("Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .build();
@@ -184,7 +184,8 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
     }
 
     @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {}
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
@@ -214,8 +215,8 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
             } else {
                 bluetoothManager.checkLocationRequirements();
             }
-        }catch (Exception e) {
-            Log.e("scan permission error","error: "+e.getMessage());
+        } catch (Exception e) {
+            Log.e("scan permission error", "error: " + e.getMessage());
         }
     }
 
@@ -307,6 +308,7 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
     /* Checking once the BLE is connected that*/
     private void checkPreviousState() {
         if (selectedMode.equals(BLE)) {
+            System.out.println("-----------------------------------------   WHAT KIND OF @ IS THIS : " + bluetoothManager.getSavedDevice().getDeviceAddress());
             if (!bluetoothManager.getSavedDevice().getDeviceAddress().isEmpty()) {
                 setDataOnScreen("Last saved device " + bluetoothManager.getSavedDevice().getDeviceName());
                 bluetoothManager.setDiscoveryCallbacks(new BluetoothViewContract.DiscoveryCallbacks() {
@@ -342,12 +344,12 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
         }
     }
 
-    private String getTemperature(String message){
-        message = message.replace(" ","").trim();
+    private String getTemperature(String message) {
+        message = message.replace(" ", "").trim();
         final int msgLength = message.length();
         message = message.substring(0, 12) + "0" + message.substring(13, msgLength);
         ArrayList<Integer> byteArray = hexStringToByteArray(message, message.length());
-        return String.valueOf(toInt16_Temp(new int[] {byteArray.get(6), byteArray.get(7)}, 0) * 0.0625);
+        return String.valueOf(toInt16_Temp(new int[]{byteArray.get(6), byteArray.get(7)}, 0) * 0.0625);
     }
 
     public static double toInt16_Temp(int[] bytes, int index) {
