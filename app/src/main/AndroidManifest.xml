@@ -36,8 +36,6 @@
         <service
             android:name="aqua.blewrapper.service.BLEService"
             android:enabled="true" />
-        <service
-            android:name="aqua.blewrapper.monitor_test.MBLEService"
-            android:enabled="true" />
+
     </application>
 </manifest>

@@ -31,11 +31,10 @@ import static aqua.blewrapper.helper.BluetoothController.log;
 
 /**
  * Created by Saurabh on 02-01-2018.
- *
+ * <p>
  * A session is created for the device in connection. The connection lasts
  * as long as this session lasts. For every connection, a new session is created.
  * Once we are done with BLE connection , we destroy this session.
- *
  */
 
 public class BLESession extends LiveData {
@@ -49,7 +48,7 @@ public class BLESession extends LiveData {
     private String mDeviceAddress;
     private final String LIST_UUID = "UUID";
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<>();
-    public static HashMap<UUID,ArrayList<BluetoothGattCharacteristic>> servicemap = new HashMap<>();
+    public static HashMap<UUID, ArrayList<BluetoothGattCharacteristic>> servicemap = new HashMap<>();
 
     public BLESession(Context mContext) {
         this.mContext = mContext;
@@ -96,7 +95,7 @@ public class BLESession extends LiveData {
                 Log.e(StateCodes.LOGTAG, "Unable to initialize Bluetooth");
             }
             // Automatically connects to the device upon successful start-up initialization.
-            log("device address in connection: "+ mDeviceAddress);
+            log("device address in connection: " + mDeviceAddress);
             if (!mDeviceAddress.isEmpty()) {
                 mBLEService.connect(mDeviceAddress);
             }
@@ -107,36 +106,51 @@ public class BLESession extends LiveData {
             log("service disconnected");
             mBLEService = null;
         }
-    };
+    }
+
+    ;
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             final String action = intent.getAction();
+
             if (ACTION_GATT_CONNECTED.equals(action)) {
                 setValue(ACTION_GATT_CONNECTED);
             } else if (ACTION_GATT_DISCONNECTED.equals(action)) {
                 setValue(ACTION_GATT_DISCONNECTED);
             } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
+
                 displayGattServices(mBLEService.getSupportedGattServices());
 
                 if (mGattCharacteristics != null) {
-                //if (false) {
+                    //if (false) {
                     BluetoothGattCharacteristic characteristic = null;
+
+                    Log.d("Characterics", "SIZE : " + String.valueOf(servicemap.entrySet().size()));
                     for (Map.Entry<UUID, ArrayList<BluetoothGattCharacteristic>> entry : servicemap.entrySet()) {
                         UUID key = entry.getKey();
                         ArrayList<BluetoothGattCharacteristic> value = entry.getValue();
                         /* this part was specific to our requirement. One can modify or delete this part
-                        *  as per their requirement.
-                        * */
-                        if(key.toString().contains("1809") && value.size() > 0) {
+                         *  as per their requirement.
+                         * */
+
+
+                        if (key.toString().contains("1809") && value.size() > 0) {
                             characteristic = value.get(1);
-                            Log.e("characteristics", characteristic.getValue()+"");
+                            Log.e("characteristics", characteristic.getValue() + "");
                             break;
                         }
                     }
+
+                    if (characteristic == null ){
+                        return;
+                    }
+
                     final int charaProp = characteristic.getProperties();
+
                     if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
                         if (mNotifyCharacteristic != null) {
                             mBLEService.setCharacteristicIndication(mNotifyCharacteristic, false);
@@ -145,6 +159,7 @@ public class BLESession extends LiveData {
                         log("reading characteristics");
                         mBLEService.readCharacteristic(characteristic);
                     }
+
                     if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                         mNotifyCharacteristic = characteristic;
                         mBLEService.setCharacteristicNotification(characteristic, true);
@@ -191,7 +206,7 @@ public class BLESession extends LiveData {
             }
             mGattCharacteristics.add(charas);
             gattCharacteristicData.add(gattCharacteristicGroupData);
-            servicemap.put(gattService.getUuid(),charas);
+            servicemap.put(gattService.getUuid(), charas);
         }
     }
 
