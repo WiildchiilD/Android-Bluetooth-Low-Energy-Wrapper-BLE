@@ -26,7 +26,6 @@ import aqua.blewrapper.contracts.BluetoothManager;
 import aqua.blewrapper.contracts.BluetoothViewContract;
 import aqua.blewrapper.helper.BluetoothController;
 import aqua.blewrapper.model.PreferenceClass;
-import aqua.blewrapper.service.BLEService;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -59,7 +58,6 @@ public class BLEActivity extends AppCompatActivity implements
     private StringBuilder dataBuilder;
     //    private String connectedDeviceName, connectedDeviceAddress;
     private String selectedMode = BLE;
-    private BLEService mBLEServiceInstance;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -72,12 +70,6 @@ public class BLEActivity extends AppCompatActivity implements
 //        button_bleMode = findViewById(R.id.bleMode);
   //      button_manualMode = findViewById(R.id.manualMode);
 
-
-        /*  getting any presaved or pre connected device name and address
-         *   This details are automatically saved by the wrapper */
-    //    selectedMode = PreferenceClass.getInstance(this).getString(mode, Manual);
-        /* only for demo */
-      //  setMode();
 
 
         /* required for ble wrapper */
@@ -96,6 +88,7 @@ public class BLEActivity extends AppCompatActivity implements
         bluetoothManager.checkBluetoothRequirements();
 
 
+        bluetoothManager.sendData();
 
 
     }
@@ -148,6 +141,7 @@ public class BLEActivity extends AppCompatActivity implements
             setDataOnScreen("Manual mode activated. Disconnected " +
                     bluetoothManager.getSavedDevice().getDeviceAddress());
         }
+
         bluetoothManager.disconnect();
     }
 
@@ -302,10 +296,6 @@ public class BLEActivity extends AppCompatActivity implements
         setDataOnScreen("Data received: " + temp);
     }
 
-    @Override
-    public void sendData(String data) {
-        bluetoothManager.sendData(data);
-    }
 
     @Override
     public void connectedDeviceState(int connectedDeviceState) {
@@ -412,7 +402,5 @@ public class BLEActivity extends AppCompatActivity implements
         return d;
     }
 
-    public void SendData(View view) {
 
-    }
 }

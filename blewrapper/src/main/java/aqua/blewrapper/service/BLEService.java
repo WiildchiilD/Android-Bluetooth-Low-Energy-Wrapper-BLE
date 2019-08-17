@@ -49,11 +49,11 @@ public class BLEService extends Service {
 
     private static BLEService single_instance = null;
 
-    private BLEService(){
+    private BLEService() {
 
     }
 
-    public static BLEService getInstance (){
+    public static BLEService getInstance() {
         if (single_instance == null)
             single_instance = new BLEService();
 
@@ -118,9 +118,9 @@ public class BLEService extends Service {
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d("Descriptor ", "Characteristic written successfully" + descriptor.getUuid().toString());
+                Log.d("Descriptor ", "DESCRIPTOR written successfully" + descriptor.getUuid().toString());
             } else {
-                Log.d("Descriptor ", "Characteristic write FAILLL" + descriptor.getUuid().toString());
+                Log.d("Descriptor ", "DESCRIPTOR write FAILLL" + descriptor.getUuid().toString());
             }
 
             for (Map.Entry<UUID, ArrayList<BluetoothGattCharacteristic>> entry : servicemap.entrySet()) {
@@ -132,6 +132,20 @@ public class BLEService extends Service {
                 }
             }
         }
+
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            super.onReadRemoteRssi(gatt, rssi, status);
+            Log.d(TAG, "onReadRemoteRssi " + status);
+
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            super.onMtuChanged(gatt, mtu, status);
+            Log.d(TAG, "onMtuChanged " + status);
+        }
+
     };
 
     private void broadcastUpdate(final String action) {
@@ -221,10 +235,10 @@ public class BLEService extends Service {
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
-                log("connection to Gatt - true");
+                log("connected to Gatt - true");
                 return true;
             } else {
-                log("connection to Gatt - false");
+                log("connected to Gatt - false");
                 return false;
             }
         }

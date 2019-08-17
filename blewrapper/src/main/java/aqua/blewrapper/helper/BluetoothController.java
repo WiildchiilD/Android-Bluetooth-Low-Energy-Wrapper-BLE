@@ -47,7 +47,7 @@ import static aqua.blewrapper.connectionstates.StateCodes.getScanPeriod;
 
 /**
  * Created by Saurabh on 27-12-2017.
- *
+ * <p>
  * Implementation class for BluetoothManager.
  * This class holds complete control of all operations.
  * It manages the life cycle for BLE operations.
@@ -175,7 +175,7 @@ public class BluetoothController implements BluetoothManager, BLEServiceCallback
             Log.e(LOGTAG, "Enabling BLE");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             mActivity.get().startActivityForResult(enableBtIntent, Request_Enable_Bluetooth);
-        }else {
+        } else {
             checkLocationRequirements();
         }
     }
@@ -318,27 +318,23 @@ public class BluetoothController implements BluetoothManager, BLEServiceCallback
 
     @Override
     public void sendData() {
-    }
-
-    @Override
-    public void sendData(String data) {
 
     }
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    log("Device discoverd");
-                    if (!scannedDevices.contains(device)) {
-                        log("device: " + device.getName() + ", " + device.getAddress());
-                        if (discoveryCallbacks != null) {
-                            discoveryCallbacks.onDeviceDiscovered(device);
-                        }
-                        scannedDevices.add(device);
-                    }
+        @Override
+        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            log("Device discoverd");
+            if (!scannedDevices.contains(device)) {
+                log("device: " + device.getName() + ", " + device.getAddress());
+                if (discoveryCallbacks != null) {
+                    discoveryCallbacks.onDeviceDiscovered(device);
                 }
-            };
+                scannedDevices.add(device);
+            }
+        }
+    };
 
     @Override
     public void onPermissionResult(@ConnectionStateCallbacks.GPSConnectionState int permissionResult) {
@@ -362,7 +358,7 @@ public class BluetoothController implements BluetoothManager, BLEServiceCallback
 
     @Override
     public void onDataReceived(String data) {
-        log("Data received: "+ data);
+        log("Data received: " + data);
         if (communicationCallbacks != null)
             communicationCallbacks.onDataReceived(data);
     }
@@ -393,7 +389,7 @@ public class BluetoothController implements BluetoothManager, BLEServiceCallback
         @Override
         public void onChanged(@Nullable Object state) {
             if (state instanceof Integer) {
-                switch ((int)state) {
+                switch ((int) state) {
                     case BluetoothTurnedOn:
                         log("BLE turned on");
                         if (connectionStateCallbacks != null)

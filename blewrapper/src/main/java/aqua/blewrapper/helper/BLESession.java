@@ -111,7 +111,6 @@ public class BLESession extends LiveData {
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
 
 
-
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -132,6 +131,7 @@ public class BLESession extends LiveData {
                     BluetoothGattCharacteristic characteristic = null;
 
                     Log.d("Characterics", "SIZE : " + String.valueOf(servicemap.entrySet().size()));
+
                     for (Map.Entry<UUID, ArrayList<BluetoothGattCharacteristic>> entry : servicemap.entrySet()) {
                         UUID key = entry.getKey();
                         ArrayList<BluetoothGattCharacteristic> value = entry.getValue();
@@ -164,13 +164,10 @@ public class BLESession extends LiveData {
 
                     if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
                         System.out.println("FOUND PROEPERTY WRITE BUT DON EVEN NO HA UZ IT");
-                        mBLEService.writeDataToCharacteristic(characteristic,"hallo".getBytes());
-
+                        mBLEService.writeDataToCharacteristic(characteristic, "hallo from android".getBytes());
                         System.out.println("END WRITTINGING");
                     }
 
-                    System.out.println("-----------------------     ANYTHONG HERE : " + BluetoothGattCharacteristic.PROPERTY_NOTIFY);
-                    System.out.println("-----------------------     AND HERE : " + charaProp);
                     if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                         if (mNotifyCharacteristic != null) {
                             mNotifyCharacteristic = characteristic;
