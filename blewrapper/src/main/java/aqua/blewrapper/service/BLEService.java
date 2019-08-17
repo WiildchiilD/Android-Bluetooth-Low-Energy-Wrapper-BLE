@@ -46,6 +46,20 @@ public class BLEService extends Service {
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
+
+    private static BLEService single_instance = null;
+
+    private BLEService(){
+
+    }
+
+    public static BLEService getInstance (){
+        if (single_instance == null)
+            single_instance = new BLEService();
+
+        return single_instance;
+    }
+
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -73,6 +87,17 @@ public class BLEService extends Service {
             }
         }
 
+
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicWrite(gatt, characteristic, status);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d("Characteristic ", "Characteristic written successfully");
+            } else {
+                Log.d("Characteristic ", "Characteristic write FAILLL");
+            }
+        }
+
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
@@ -91,11 +116,18 @@ public class BLEService extends Service {
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d("Descriptor ", "Characteristic written successfully" + descriptor.getUuid().toString());
+            } else {
+                Log.d("Descriptor ", "Characteristic write FAILLL" + descriptor.getUuid().toString());
+            }
+
             for (Map.Entry<UUID, ArrayList<BluetoothGattCharacteristic>> entry : servicemap.entrySet()) {
                 UUID key = entry.getKey();
                 ArrayList<BluetoothGattCharacteristic> value = entry.getValue();
-                if(key.toString().contains("1809")) {
-                    final BluetoothGattCharacteristic characteristic  = value.get(0);
+                if (key.toString().contains("1809")) {
+                    final BluetoothGattCharacteristic characteristic = value.get(0);
                     setCharacteristicIndication(characteristic, true);
                 }
             }
@@ -150,7 +182,7 @@ public class BLEService extends Service {
      *
      * @return Return true if the initialization is successful.
      */
-    public boolean  initialize() {
+    public boolean initialize() {
         // For API level 18 and above, get a reference to BluetoothAdapter through
         // BluetoothManager.
         if (mBluetoothManager == null) {
@@ -174,11 +206,10 @@ public class BLEService extends Service {
      * Connects to the GATT server hosted on the Bluetooth LE device.
      *
      * @param address The device address of the destination device.
-     *
      * @return Return true if the connection is initiated successfully. The connection result
-     *         is reported asynchronously through the
-     *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-     *         callback.
+     * is reported asynchronously through the
+     * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
+     * callback.
      */
     public boolean connect(final String address) {
         if (mBluetoothAdapter == null || address == null) {
@@ -208,6 +239,8 @@ public class BLEService extends Service {
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         log("Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
+
+
         return true;
     }
 
@@ -237,7 +270,7 @@ public class BLEService extends Service {
             mBluetoothGatt.close();
             mBluetoothGatt = null;
         } catch (Exception e) {
-            log("dead object: "+ e.getMessage());
+            log("dead object: " + e.getMessage());
         }
     }
 
@@ -256,11 +289,32 @@ public class BLEService extends Service {
         mBluetoothGatt.readCharacteristic(characteristic);
     }
 
+    /* set new value for particular characteristic */
+    public void writeDataToCharacteristic(final BluetoothGattCharacteristic ch, final byte[] dataToWrite) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null || ch == null) return;
+
+        // first set it locally....
+        ch.setValue(dataToWrite);
+        // ... and then "commit" changes to the peripheral
+
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        System.out.println("WRITIIIIIIIIIIIIIIIIIIIIIIING");
+                        System.out.println(mBluetoothGatt.writeCharacteristic(ch));
+
+                    }
+                },
+                5000
+        );
+    }
+
     /**
      * Enables or disables notification on a give characteristic.
      *
      * @param characteristic Characteristic to act on.
-     * @param enabled If true, enable notification.  False otherwise.
+     * @param enabled        If true, enable notification.  False otherwise.
      */
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {

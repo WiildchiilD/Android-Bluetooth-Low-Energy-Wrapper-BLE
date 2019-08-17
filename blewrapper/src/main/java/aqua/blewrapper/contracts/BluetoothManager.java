@@ -37,4 +37,6 @@ public interface BluetoothManager<T> {
     void setGoogleApiClient(GoogleApiClient googleApiClient);
     void retryConnection();
     Device getSavedDevice();
+
+    void sendData();
 }

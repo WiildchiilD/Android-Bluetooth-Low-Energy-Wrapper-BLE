@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/Android-Bluetooth-Low-Energy-Wrapper-BLE.iml" filepath="$PROJECT_DIR$/Android-Bluetooth-Low-Energy-Wrapper-BLE.iml" />
       <module fileurl="file://$PROJECT_DIR$/BLEWrapper.iml" filepath="$PROJECT_DIR$/BLEWrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/blewrapper/blewrapper.iml" filepath="$PROJECT_DIR$/blewrapper/blewrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/blewrapper/blewrapper.iml" filepath="$PROJECT_DIR$/blewrapper/blewrapper.iml" />
     </modules>
   </component>

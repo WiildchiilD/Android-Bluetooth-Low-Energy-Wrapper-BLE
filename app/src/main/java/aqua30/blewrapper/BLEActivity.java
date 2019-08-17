@@ -26,6 +26,7 @@ import aqua.blewrapper.contracts.BluetoothManager;
 import aqua.blewrapper.contracts.BluetoothViewContract;
 import aqua.blewrapper.helper.BluetoothController;
 import aqua.blewrapper.model.PreferenceClass;
+import aqua.blewrapper.service.BLEService;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -34,10 +35,13 @@ import static aqua.blewrapper.connectionstates.StateCodes.RC_LOCATION;
 import static aqua.blewrapper.helper.BluetoothController.log;
 
 /**
- * Created by Saurabh on 27-12-2017.
+ * Created by Derouiche elyes on 27-12-2017.
  */
-public class BLEActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,
-        BluetoothViewContract.ConnectionStateCallbacks, BluetoothViewContract.CommunicationCallbacks, BluetoothViewContract.ConnectedDeviceStateCallbacks {
+public class BLEActivity extends AppCompatActivity implements
+        EasyPermissions.PermissionCallbacks,
+        BluetoothViewContract.ConnectionStateCallbacks,
+        BluetoothViewContract.CommunicationCallbacks,
+        BluetoothViewContract.ConnectedDeviceStateCallbacks {
 
     /* Views */
     private TextView dataView;
@@ -54,21 +58,28 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
     /* variables */
     private StringBuilder dataBuilder;
     //    private String connectedDeviceName, connectedDeviceAddress;
-    private String selectedMode;
+    private String selectedMode = BLE;
+    private BLEService mBLEServiceInstance;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_test);
         dataBuilder = new StringBuilder();
         dataView = findViewById(R.id.input_text);
-        button_bleMode = findViewById(R.id.bleMode);
-        button_manualMode = findViewById(R.id.manualMode);
+
+//        button_bleMode = findViewById(R.id.bleMode);
+  //      button_manualMode = findViewById(R.id.manualMode);
+
+
         /*  getting any presaved or pre connected device name and address
          *   This details are automatically saved by the wrapper */
-        selectedMode = PreferenceClass.getInstance(this).getString(mode, Manual);
+    //    selectedMode = PreferenceClass.getInstance(this).getString(mode, Manual);
         /* only for demo */
-        setMode();
+      //  setMode();
+
+
         /* required for ble wrapper */
         buildGoogleApiClient();
         /* ble wrapper main object via which we'll do all the operations */
@@ -83,6 +94,10 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
         bluetoothManager.setConnectedDeviceStateCallbacks(this);
         /* it checks all the required permission for Bluetooth activation */
         bluetoothManager.checkBluetoothRequirements();
+
+
+
+
     }
 
     private void setMode() {
@@ -115,7 +130,7 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
     public void Connect(View view) {
         selectedMode = BLE;
         PreferenceClass.getEditor(this).putString(mode, selectedMode).apply();
-        setMode();
+        //setMode();
         if (!bluetoothManager.getSavedDevice().getDeviceAddress().isEmpty()) {
             setDataOnScreen("Connecting to " + bluetoothManager.getSavedDevice().getDeviceName() + "...");
             bluetoothManager.connectToDevice(bluetoothManager.getSavedDevice().getDeviceAddress());
@@ -288,6 +303,11 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
     }
 
     @Override
+    public void sendData(String data) {
+        bluetoothManager.sendData(data);
+    }
+
+    @Override
     public void connectedDeviceState(int connectedDeviceState) {
         switch (connectedDeviceState) {
             case StateCodes.DeviceConnected:
@@ -390,5 +410,9 @@ public class BLEActivity extends AppCompatActivity implements EasyPermissions.Pe
             log(e.getMessage());
         }
         return d;
+    }
+
+    public void SendData(View view) {
+
     }
 }

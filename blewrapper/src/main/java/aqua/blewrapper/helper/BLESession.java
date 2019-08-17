@@ -77,9 +77,9 @@ public class BLESession extends LiveData {
     public boolean connectTo(String deviceAddress) {
         mDeviceAddress = deviceAddress;
         if (mBLEService != null) {
-            log("connecting to device "+ deviceAddress);
+            log("connecting to device " + deviceAddress);
             final boolean result = mBLEService.connect(mDeviceAddress);
-            log("connected to device "+ result);
+            log("connected to device " + result);
             return result;
         }
         return false;
@@ -108,9 +108,10 @@ public class BLESession extends LiveData {
         }
     }
 
-    ;
-
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+
+
+
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -123,6 +124,7 @@ public class BLESession extends LiveData {
             } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
 
+                // this outputs servicemap with services
                 displayGattServices(mBLEService.getSupportedGattServices());
 
                 if (mGattCharacteristics != null) {
@@ -133,19 +135,19 @@ public class BLESession extends LiveData {
                     for (Map.Entry<UUID, ArrayList<BluetoothGattCharacteristic>> entry : servicemap.entrySet()) {
                         UUID key = entry.getKey();
                         ArrayList<BluetoothGattCharacteristic> value = entry.getValue();
-                        /* this part was specific to our requirement. One can modify or delete this part
-                         *  as per their requirement.
-                         * */
 
+                        for (BluetoothGattCharacteristic bleChar : value) {
+                            Log.d("Charactertics", "UIDS : " + bleChar.getUuid());
 
-                        if (key.toString().contains("1809") && value.size() > 0) {
-                            characteristic = value.get(1);
-                            Log.e("characteristics", characteristic.getValue() + "");
-                            break;
+                            if (key.toString().contains("0000ec00") && value.size() > 0) {
+                                characteristic = bleChar;
+                                Log.e("characteristics FOUND", characteristic.getValue() + "");
+                                break;
+                            }
                         }
                     }
 
-                    if (characteristic == null ){
+                    if (characteristic == null) {
                         return;
                     }
 
@@ -160,14 +162,28 @@ public class BLESession extends LiveData {
                         mBLEService.readCharacteristic(characteristic);
                     }
 
-                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                        mNotifyCharacteristic = characteristic;
-                        mBLEService.setCharacteristicNotification(characteristic, true);
+                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
+                        System.out.println("FOUND PROEPERTY WRITE BUT DON EVEN NO HA UZ IT");
+                        mBLEService.writeDataToCharacteristic(characteristic,"hallo".getBytes());
+
+                        System.out.println("END WRITTINGING");
                     }
+
+                    System.out.println("-----------------------     ANYTHONG HERE : " + BluetoothGattCharacteristic.PROPERTY_NOTIFY);
+                    System.out.println("-----------------------     AND HERE : " + charaProp);
+                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                        if (mNotifyCharacteristic != null) {
+                            mNotifyCharacteristic = characteristic;
+                            mBLEService.setCharacteristicNotification(characteristic, true);
+                        }
+                    }
+
                 } else {
                     Log.e("characteristics", "mGattCharacteristics == null");
                 }
                 setValue(ACTION_GATT_SERVICES_DISCOVERED);
+
+
             } else if (ACTION_DATA_AVAILABLE.equals(action)) {
                 setValue(intent);
             }

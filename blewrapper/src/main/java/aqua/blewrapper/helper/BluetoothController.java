@@ -316,6 +316,15 @@ public class BluetoothController implements BluetoothManager, BLEServiceCallback
         return lastConnectedDevice;
     }
 
+    @Override
+    public void sendData() {
+    }
+
+    @Override
+    public void sendData(String data) {
+
+    }
+
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
                 @Override

@@ -26,6 +26,8 @@ public interface BluetoothViewContract {
 
     interface CommunicationCallbacks{
         void onDataReceived(String data);
+
+        void sendData(String data);
     }
 
     interface ConnectedDeviceStateCallbacks {

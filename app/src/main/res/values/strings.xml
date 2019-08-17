@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FTDI</string>
+    <string name="app_name">BLEDEMO</string>
     <string name="setting">Settings</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -8,9 +8,9 @@
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
 
-    <string name="title_activity_main">FTDI D2xx Demo</string>
-    <string name="title_activity_ftdi_mode_fragment">Ftdi Mode Info</string>
-    <string name="title_activity_ftdi_mode_control">Ftdi Mode Control</string>
+    <string name="title_activity_main">BLE Demo</string>
+    <string name="title_activity_ftdi_mode_fragment">BLE Mode Info</string>
+    <string name="title_activity_ftdi_mode_control">BLE Mode Control</string>
     <string name="button_info">Information</string>
     <string name="button_configure">Device Configure</string>
     <string name="button_eeprom">Device EEPROM API</string>

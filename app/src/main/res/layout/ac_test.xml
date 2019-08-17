@@ -32,17 +32,18 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:onClick="Connect"
-            android:text="BLE Mode"
+            android:text="Click 2 CONNECT"
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/manualMode"
+            android:id="@+id/bleSend"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:onClick="Disconnect"
-            android:text="Manual Mode"
+            android:onClick="SendData"
+            android:text="SEND SHIT"
             android:textSize="16sp" />
+
 
         <Button
             android:id="@+id/clear"
